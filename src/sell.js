@@ -19,7 +19,7 @@ const main = async () => {
     const txns = await alchemy.core.getAssetTransfers({
       fromBlock: "0x0",
       excludeZeroValue: true,
-      maxCount: 50,
+      maxCount: 300,
       fromAddress: fromAddress,
       category: ["external"],
     });
@@ -43,7 +43,7 @@ const queryShares = async function (list) {
   try {
     const sharesList = [];
     for (const y of list) {
-      if (list.indexOf(y) < 10) {
+      if (list.indexOf(y) < 50) {
         const txInfo = await provider.getTransaction(y);
         const decode = new ethers.Interface([
           "function buyShares(address, uint256 )",
@@ -74,7 +74,7 @@ const placeSell = async function (raw) {
       url: "https://api.post.tech/wallet-post/wallet/send-transaction",
       headers: {
         Authorization:
-          "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFkNWM1ZTlmNTdjOWI2NDYzYzg1ODQ1YTA4OTlhOWQ0MTI5MmM4YzMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBNLiAoU2lubmVycz8pIPCflbjvuI8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzE2NDI5MzQ3MTYwNzk2NjkyNDkvTUpQejJkX3dfbm9ybWFsLmpwZyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9wb3N0LXRlY2gtcHJvZCIsImF1ZCI6InBvc3QtdGVjaC1wcm9kIiwiYXV0aF90aW1lIjoxNjk1OTkxMTU3LCJ1c2VyX2lkIjoiVEx1TFZxV1gyWGUxbWNraWxrRkJuYTZXb1pUMiIsInN1YiI6IlRMdUxWcVdYMlhlMW1ja2lsa0ZCbmE2V29aVDIiLCJpYXQiOjE2OTYwMTc1NjUsImV4cCI6MTY5NjAyMTE2NSwiZW1haWwiOiJncy5tYXRoLm1tQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJ0d2l0dGVyLmNvbSI6WyIzNDM4NTg3MzI3Il0sImVtYWlsIjpbImdzLm1hdGgubW1AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoidHdpdHRlci5jb20ifX0.chxTkY2Fmm9h8hKH4spbo9xr5ihUoIKYGWkIe6qwY-CNuCprmZTVZ6uVKsF8kzOEQAKFoElgJKrmiMLVOEgEr2-bxIHMLpbEamJFG3buWflekRjNM4b_DS2Xrh-7vR_Od2_RzZz60DayuUAVWLMPEjDWKMfeurQ-pUYGY3uv0QWWhHIcgVbQnbdwX8huol0SDvmgFVJc9FYZh8tfOzG0TbBERmDZEcJBg8mj8BEOwL6Ir1--nIUBRwanox0uy2BTO5C05yaVEc--OR5cssUTloDAt7SMuVAXvzYtYHXro1ydwM9XY_X8QNHZJDM_N2oO0faRkbbkYam6LDWXxG5G8A",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFkNWM1ZTlmNTdjOWI2NDYzYzg1ODQ1YTA4OTlhOWQ0MTI5MmM4YzMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBNLiAoU2lubmVycz8pIPCflbjvuI8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzE2NDI5MzQ3MTYwNzk2NjkyNDkvTUpQejJkX3dfbm9ybWFsLmpwZyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9wb3N0LXRlY2gtcHJvZCIsImF1ZCI6InBvc3QtdGVjaC1wcm9kIiwiYXV0aF90aW1lIjoxNjk2MDI1MDMwLCJ1c2VyX2lkIjoiVEx1TFZxV1gyWGUxbWNraWxrRkJuYTZXb1pUMiIsInN1YiI6IlRMdUxWcVdYMlhlMW1ja2lsa0ZCbmE2V29aVDIiLCJpYXQiOjE2OTYwMjUwMzAsImV4cCI6MTY5NjAyODYzMCwiZW1haWwiOiJncy5tYXRoLm1tQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJ0d2l0dGVyLmNvbSI6WyIzNDM4NTg3MzI3Il0sImVtYWlsIjpbImdzLm1hdGgubW1AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoidHdpdHRlci5jb20ifX0.rOR9Hbi3P51q-hejgCElDiXZnzTfmhze0em4hJ3eHSoHUY9e0Pn2mRJF89uz_BNsyDgP2Ph3cajjhdVsYdYiPNYg3zvs2f5epp8Z5OqIbZInhM9A1siNwIFWMDYXV_78b5O8a1iYI56UPWaSFghaaUYiqBd6JI3O0CacdxCfX-reQOO5Awl_Qs5NXinrklvX67bYAAApPEb-Vuh8Kg93j8T1VyKMO9Bn1-x6R1nWPDQLPY9rzceX3S1LKKL7pyWT0DkGRZv0593blodQk_pgvusoKAnFl2o16Gs8sstj5c0zTX83Oz7Je4IqoRO8jCeebuEHq8DGvykLIlLMJlo4ag",
         "Content-Type": " application/json",
       },
       data: data,
@@ -85,8 +85,8 @@ const placeSell = async function (raw) {
     console.log(`\n${result}`);
   } catch (error) {
     if (error.response.status == 400) {
-      console.log("\nFalhou!");
-      return await main();
+      const log = console.log("\nFalhou!");
+      return log;
     } else if (error.response.status == 401) {
       console.log(error.response.data.message);
     }
@@ -109,14 +109,11 @@ const createSell = async function (params) {
       const numberInfo = parseInt(info.toString());
       if (numberInfo == 250000000000000) {
         console.log("\nTem um no preço.");
-
-        for (const a of params) {
-          const data = contract.interface.encodeFunctionData("sellShares", [
-            a[0],
-            a[1],
-          ]);
-          await placeSell(data);
-        }
+        const data = contract.interface.encodeFunctionData("sellShares", [
+          z[0],
+          z[1],
+        ]);
+        await placeSell(data);
       } else {
         continue;
       }
