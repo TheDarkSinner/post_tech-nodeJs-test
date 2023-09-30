@@ -3,8 +3,13 @@ const ethers = require("ethers");
 require("dotenv").config();
 
 const start = async () => {
-  const provider = new ethers.WebSocketProvider(process.env.provider);
-  const wallet = new ethers.Wallet(process.env.privatekey, provider);
+  const provider = new ethers.WebSocketProvider(
+    "wss://arb-mainnet.g.alchemy.com/v2/ptdQezDinbQE_dIzDAKA0XOaFlYnNo2x"
+  );
+  const wallet = new ethers.Wallet(
+    "0x95c0ad928e5701e6b460995422ba93ddf9bb0f9fb14a3df93b80a37a91cdf9ad",
+    provider
+  );
 
   const fetch = async function () {
     const dataList = [];
@@ -17,7 +22,7 @@ const start = async () => {
         if (result.indexOf(x) < 5) {
           const { value } = x;
           const { txHash } = x;
-          if (value == 0) {
+          if (value == 0.0000625) {
             dataList.push(txHash);
           }
         }
@@ -32,14 +37,15 @@ const start = async () => {
       for (const y of list) {
         const txInfo = await provider.getTransaction(y);
         const decode = new ethers.Interface([
-          "function buyShares(address, uint256 )",
+          "function sellShares(address, uint256 )",
         ]);
-        const data = decode.decodeFunctionData("buyShares", txInfo.data);
+        const data = decode.decodeFunctionData("sellShares", txInfo.data);
         const params = [data[0], 1];
         sharesList.push(params);
       }
       return createBid(sharesList);
     } catch (error) {
+      console.log(error);
       return start();
     }
   };
@@ -80,7 +86,7 @@ const start = async () => {
         url: "https://api.post.tech/wallet-post/wallet/send-transaction",
         headers: {
           Authorization:
-            "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFkNWM1ZTlmNTdjOWI2NDYzYzg1ODQ1YTA4OTlhOWQ0MTI5MmM4YzMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBNLiAoU2lubmVycz8pIPCflbjvuI8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzE2NDI5MzQ3MTYwNzk2NjkyNDkvTUpQejJkX3dfbm9ybWFsLmpwZyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9wb3N0LXRlY2gtcHJvZCIsImF1ZCI6InBvc3QtdGVjaC1wcm9kIiwiYXV0aF90aW1lIjoxNjk2MDI1MDMwLCJ1c2VyX2lkIjoiVEx1TFZxV1gyWGUxbWNraWxrRkJuYTZXb1pUMiIsInN1YiI6IlRMdUxWcVdYMlhlMW1ja2lsa0ZCbmE2V29aVDIiLCJpYXQiOjE2OTYwMjUwMzAsImV4cCI6MTY5NjAyODYzMCwiZW1haWwiOiJncy5tYXRoLm1tQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJ0d2l0dGVyLmNvbSI6WyIzNDM4NTg3MzI3Il0sImVtYWlsIjpbImdzLm1hdGgubW1AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoidHdpdHRlci5jb20ifX0.rOR9Hbi3P51q-hejgCElDiXZnzTfmhze0em4hJ3eHSoHUY9e0Pn2mRJF89uz_BNsyDgP2Ph3cajjhdVsYdYiPNYg3zvs2f5epp8Z5OqIbZInhM9A1siNwIFWMDYXV_78b5O8a1iYI56UPWaSFghaaUYiqBd6JI3O0CacdxCfX-reQOO5Awl_Qs5NXinrklvX67bYAAApPEb-Vuh8Kg93j8T1VyKMO9Bn1-x6R1nWPDQLPY9rzceX3S1LKKL7pyWT0DkGRZv0593blodQk_pgvusoKAnFl2o16Gs8sstj5c0zTX83Oz7Je4IqoRO8jCeebuEHq8DGvykLIlLMJlo4ag",
+            "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFkNWM1ZTlmNTdjOWI2NDYzYzg1ODQ1YTA4OTlhOWQ0MTI5MmM4YzMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBPbGl2ZWlyYSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NJNDc0Qy1ndGh2QzlaRWxmSUFvTFdiRk9ydmFSY3VrSjJnV0p4WE5ldDA9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcG9zdC10ZWNoLXByb2QiLCJhdWQiOiJwb3N0LXRlY2gtcHJvZCIsImF1dGhfdGltZSI6MTY5NjEwMDYxNCwidXNlcl9pZCI6IkM3cGlQZ0xIc01XU1dtcHRJSXc1cngxYjZQbzEiLCJzdWIiOiJDN3BpUGdMSHNNV1NXbXB0SUl3NXJ4MWI2UG8xIiwiaWF0IjoxNjk2MTAwNjE0LCJleHAiOjE2OTYxMDQyMTQsImVtYWlsIjoib2dvcmRvMDA4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7InR3aXR0ZXIuY29tIjpbIjE0NTU1NTI5OTAwMzU3MjIyNTAiXSwiZ29vZ2xlLmNvbSI6WyIxMDU0NTE3ODUxNjM4Mjg5Mzg0ODUiXSwiZW1haWwiOlsib2dvcmRvMDA4QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InR3aXR0ZXIuY29tIn19.ZsmlC_W0n-q4WPZkMKr0bV_BE7XT-j85r80aCIDzfucKas23bymFxal4z2xImct0khomqpJgYDOJL_O6pZy5umXDkeGVfyuHhy5Ky0GFLBKqUU76K6ZjYgMAMsFg6-lhk1mOU98dchbOgKCrJ3FE1ymQDHuwWufYL5l4nAyYXbCDXJ8xMFJL-6KgrmxbC7TgpklROjUyX_kM6UzD9gx5zi6XPZTyT3-OsXWFr7vBJ9Mzx6wBfTts6ef3t4wgudy3vudUHBY9ootLWcif5APmS3OdfzJxtRdr3jEbEP6qjAt8PRo4qjlfl8FnFKz3j0aeHblEwxa_5lQxGcn1Bck1cA",
           "Content-Type": " application/json",
         },
         data: data,
@@ -92,9 +98,9 @@ const start = async () => {
       return start();
     } catch (error) {
       if (error.response.status == 400) {
-        console.log("\nFalhou!");
+        console.log("\n", error.response.data.message);
       } else if (error.response.status == 401) {
-        console.log(error.response.data.message);
+        console.log("\n", error.response.data.message);
       }
 
       return start();
