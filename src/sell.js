@@ -79,20 +79,28 @@ async function obterTransacoes() {
             params.map(async (z) => {
               const info = await contrato.getSellPrice(z[0], z[1]);
               const numberInfo = parseInt(info.toString());
-              if (numberInfo >= 250000000000000) {
-                console.log("\nTem um no preço.");
-                const data = contrato.interface.encodeFunctionData(
-                  "sellShares",
-                  [z[0], z[1]]
-                );
-                placeSell(data);
-                await new Promise((resolve) => setTimeout(resolve, 200));
+              async function verify() {
+                if (numberInfo >= 250000000000000) {
+                  console.log("\nTem um no preço.");
+                  const data = contrato.interface.encodeFunctionData(
+                    "sellShares",
+                    [z[0], z[1]]
+                  );
+                  return await placeSell(data);
+                }
+              }
+              const result = await verify();
+              const regex = /^"0x[a-fA-F0-9]{64}"$/;
+              if (result == undefined) {
+              } else if (!regex.test(result)) {
+                console.log("\nTentando de novo!");
+                await verify();
               }
             })
           );
         } catch (error) {
           console.log(error);
-          return main();
+          return start();
         }
       };
 
@@ -121,9 +129,11 @@ async function obterTransacoes() {
           const response = await axios.request(config);
           const result = JSON.stringify(response.data.data.tx_hash);
           console.log(`\n${result}\n`);
+          return result;
         } catch (error) {
           if (error.response.status == 400) {
             console.log("\n", error.response.data.message);
+            return error.response.data.message;
           } else if (error.response.status == 401) {
             console.log("\n", error.response.data.message);
             bearerToken = await getToken();
@@ -137,8 +147,6 @@ async function obterTransacoes() {
       return start();
     }
   } catch (error) {
-    console.log("Erro ao obter transações:", error);
-    return start();
     console.log("Erro ao obter transações:", error);
     return start();
   }
