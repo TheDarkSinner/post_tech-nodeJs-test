@@ -1,0 +1,17 @@
+2023/10/05-01:44:31.813 564c Reusing MANIFEST C:\tmp\myChromeSession\Default\Local Storage\leveldb/MANIFEST-000001
+2023/10/05-01:44:31.814 564c Recovering log #11
+2023/10/05-01:44:31.816 564c Reusing old log C:\tmp\myChromeSession\Default\Local Storage\leveldb/000011.log 
+2023/10/05-01:44:43.344 4810 Level-0 table #14: started
+2023/10/05-01:44:43.347 4810 Level-0 table #14: 43437 bytes OK
+2023/10/05-01:44:43.348 4810 Delete type=0 #11
+2023/10/05-01:45:21.504 4810 Level-0 table #16: started
+2023/10/05-01:45:21.507 4810 Level-0 table #16: 51823 bytes OK
+2023/10/05-01:45:21.507 4810 Delete type=0 #13
+2023/10/05-01:45:21.508 4810 Compacting 4@0 + 0@1 files
+2023/10/05-01:45:21.511 4810 Generated table #17@0: 44 keys, 53179 bytes
+2023/10/05-01:45:21.511 4810 Compacted 4@0 + 0@1 files => 53179 bytes
+2023/10/05-01:45:21.511 4810 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/10/05-01:45:21.512 4810 Delete type=2 #7
+2023/10/05-01:45:21.512 4810 Delete type=2 #10
+2023/10/05-01:45:21.512 4810 Delete type=2 #14
+2023/10/05-01:45:21.512 4810 Delete type=2 #16

@@ -1,0 +1,15 @@
+2023/10/05-01:18:00.250 500c Reusing MANIFEST C:\tmp\myChromeSession\Default\IndexedDB\https_post.tech_0.indexeddb.leveldb/MANIFEST-000001
+2023/10/05-01:18:00.250 500c Recovering log #166
+2023/10/05-01:18:00.253 500c Reusing old log C:\tmp\myChromeSession\Default\IndexedDB\https_post.tech_0.indexeddb.leveldb/000166.log 
+2023/10/05-01:18:00.253 500c Delete type=2 #164
+2023/10/05-01:18:00.253 500c Delete type=2 #167
+2023/10/05-01:18:00.733 5358 Level-0 table #171: started
+2023/10/05-01:18:00.737 5358 Level-0 table #171: 213787 bytes OK
+2023/10/05-01:18:00.738 5358 Delete type=0 #166
+2023/10/05-01:18:00.738 1d58 Manual compaction at level-0 from '\x001\x00\x00\x00' @ 72057594037927935 : 1 .. '\x002\x00\x00\x00' @ 0 : 0; will stop at '\x001\x00\x00\x05' @ 86368 : 1
+2023/10/05-01:18:00.738 1d58 Compacting 1@0 + 1@1 files
+2023/10/05-01:18:00.763 1d58 Generated table #172@0: 8084 keys, 1431659 bytes
+2023/10/05-01:18:00.763 1d58 Compacted 1@0 + 1@1 files => 1431659 bytes
+2023/10/05-01:18:00.764 1d58 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/10/05-01:18:00.764 1d58 Delete type=2 #171
+2023/10/05-01:18:00.764 1d58 Manual compaction at level-0 from '\x001\x00\x00\x05' @ 86368 : 1 .. '\x002\x00\x00\x00' @ 0 : 0; will stop at (end)
