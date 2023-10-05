@@ -1,20 +1,22 @@
 const axios = require("axios");
 const ethers = require("ethers");
+const { getToken } = require("./refreshToken");
+require("dotenv").config();
 
 // Infura é um serviço de infraestrutura Ethereum que permite acesso à rede Ethereum.
-const provider = new ethers.WebSocketProvider(
-  "wss://arbitrum.blockpi.network/v1/ws/2f969b1f02203399a9c3fa0ab42e0cc8900548a6"
-);
+const importProvider = process.env.provider;
+const provider = new ethers.WebSocketProvider(importProvider);
 
 // Seu endereço Ethereum e o contrato com o método específico que você deseja rastrear.
-//0x1310cbf77ec2f8c7745739e64dc2df8860bcf07e - 1
-//0x4c00ee4f0dc2f9366864ec8c80f4ea905bb82074 - 2
-const seuEndereco = "0x1310cbf77ec2f8c7745739e64dc2df8860bcf07e";
+
+const seuEndereco = process.env.seuEndereco;
 const contratoEndereco = "0x87da6930626Fe0c7dB8bc15587ec0e410937e5DC";
 const contratoAbi =
   '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"trader","type":"address"},{"indexed":false,"internalType":"address","name":"subject","type":"address"},{"indexed":false,"internalType":"bool","name":"isBuy","type":"bool"},{"indexed":false,"internalType":"uint256","name":"shareAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"ethAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"protocolEthAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"subjectEthAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"holderEthAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"referralEthAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"supply","type":"uint256"}],"name":"Trade","type":"event"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buyShares","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"getBuyPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"getBuyPriceAfterFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"supply","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"getPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"getSellPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"getSellPriceAfterFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"holderAndReferralFeeDestination","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"holderFeePercent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"protocolFeeDestination","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"protocolFeePercent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"referralFeePercent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sharesSubject","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"sellShares","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_feeDestination","type":"address"}],"name":"setFeeDestination","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_feeDestination","type":"address"}],"name":"setHolderFeeDestination","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feePercent","type":"uint256"}],"name":"setProtocolFeePercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feePercent","type":"uint256"}],"name":"setSubjectFeePercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feePercent","type":"uint256"}],"name":"sethHolderFeePercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feePercent","type":"uint256"}],"name":"sethReferralFeePercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"sharesBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"sharesSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"subjectFeePercent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]'; // O ABI do contrato com o método específico.
 
-const apiKey = "BIAWVZJQB7VCJ5F743FCNUB8W3ZT1F7P8I"; // Você precisa se registrar no ArbitrumScan para obter uma chave de API.
+const apiKey = process.env.apiKey; // Você precisa se registrar no ArbitrumScan para obter uma chave de API.
+
+let bearerToken;
 
 async function obterTransacoes() {
   try {
@@ -110,8 +112,7 @@ async function obterTransacoes() {
             maxBodyLength: Infinity,
             url: "https://api.post.tech/wallet-post/wallet/send-transaction",
             headers: {
-              Authorization:
-                "eyJhbGciOiJSUzI1NiIsImtpZCI6IjlhNTE5MDc0NmU5M2JhZTI0OWIyYWE3YzJhYTRlMzA2M2UzNDFlYzciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBNLiAoU2lubmVycz8pIPCflbjvuI8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzE2NDI5MzQ3MTYwNzk2NjkyNDkvTUpQejJkX3dfbm9ybWFsLmpwZyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9wb3N0LXRlY2gtcHJvZCIsImF1ZCI6InBvc3QtdGVjaC1wcm9kIiwiYXV0aF90aW1lIjoxNjk1OTkxMTU3LCJ1c2VyX2lkIjoiVEx1TFZxV1gyWGUxbWNraWxrRkJuYTZXb1pUMiIsInN1YiI6IlRMdUxWcVdYMlhlMW1ja2lsa0ZCbmE2V29aVDIiLCJpYXQiOjE2OTYzMDc2MzEsImV4cCI6MTY5NjMxMTIzMSwiZW1haWwiOiJncy5tYXRoLm1tQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJ0d2l0dGVyLmNvbSI6WyIzNDM4NTg3MzI3Il0sImVtYWlsIjpbImdzLm1hdGgubW1AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoidHdpdHRlci5jb20ifX0.dHhDiOEasJob38y9LKvB3A0NKtcmU1xzP0xoUSf-Qm3ECwOGlt8v3wQgUfmYmBKpi441Ky8LhYbuaFNOm_NSSkQ3BPGtF-UvdLiGq9CDFYmMCNxUYpZSmS4glo_kuhcMhkyVLhY4aC2Ms0ybM6nLqYbEhdV0RObC3g6KRrRkAd7HEA3tOTs-_tcq5Bxyg2b3obf9tVstMnBCwkDnsPUrn9KIWXjP6li5mJsezrgKmQhm2G9m1WM4SRowJoxEUaG_ov1zYMZ8o-jIp-rUfZHHuuJRKfnLMn7KjEEfcrIaJXhAMqT_w23ISKYMxQbNU0zbwfKCRiNHsKIYqJo8TnYT3w",
+              Authorization: bearerToken,
               "Content-Type": " application/json",
             },
             data: data,
@@ -119,32 +120,37 @@ async function obterTransacoes() {
 
           const response = await axios.request(config);
           const result = JSON.stringify(response.data.data.tx_hash);
-          console.log(`\n${result}`);
+          console.log(`\n${result}\n`);
         } catch (error) {
           if (error.response.status == 400) {
-            const log = console.log("\n", error.response.data.message);
-            return log;
+            console.log("\n", error.response.data.message);
           } else if (error.response.status == 401) {
             console.log("\n", error.response.data.message);
+            bearerToken = await getToken();
           }
         }
       };
 
       await createSell(transacoesValidas);
     } else {
-      throw new Error("Erro na solicitação ao ArbitrumScan API");
+      console.log("Erro na solicitação ao ArbitrumScan API");
+      return start();
     }
   } catch (error) {
-    console.error("Erro ao obter transações:", error);
+    console.log("Erro ao obter transações:", error);
+    return start();
   }
 }
 
 async function start() {
   while (true) {
     console.log("Iniciando.");
+    if (bearerToken == undefined) {
+      bearerToken = await getToken();
+    }
     await obterTransacoes();
     console.log("Aguardando.");
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     console.log("Proximo loop.");
   }
 }

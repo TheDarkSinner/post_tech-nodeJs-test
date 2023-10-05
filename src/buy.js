@@ -1,19 +1,19 @@
 const axios = require("axios");
 const ethers = require("ethers");
+const { getToken } = require("./refreshToken");
 require("dotenv").config();
+
+let bearerToken;
 
 const start = async () => {
   try {
-    const provider = new ethers.WebSocketProvider(
-      "wss://arb-mainnet.g.alchemy.com/v2/ptdQezDinbQE_dIzDAKA0XOaFlYnNo2x"
-    );
+    const alchemy = new ethers.WebSocketProvider(process.env.alchemy);
 
-    //0x912cefd65050fd1e85a4623a37e3c2f970dff88f4aaa1bf47c67a53c72ed92a5 - 1
-    //0x95c0ad928e5701e6b460995422ba93ddf9bb0f9fb14a3df93b80a37a91cdf9ad - 2
-    const wallet = new ethers.Wallet(
-      "0x912cefd65050fd1e85a4623a37e3c2f970dff88f4aaa1bf47c67a53c72ed92a5",
-      provider
-    );
+    const wallet = new ethers.Wallet(process.env.wallet, alchemy);
+
+    if (bearerToken == undefined) {
+      bearerToken = await getToken();
+    }
 
     const fetch = async function () {
       const dataList = [];
@@ -40,7 +40,7 @@ const start = async () => {
       try {
         const sharesList = [];
         for (const y of list) {
-          const txInfo = await provider.getTransaction(y);
+          const txInfo = await alchemy.getTransaction(y);
           const decode = new ethers.Interface([
             "function sellShares(address, uint256 )",
           ]);
@@ -53,7 +53,7 @@ const start = async () => {
         try {
           const sharesList = [];
           for (const y of list) {
-            const txInfo = await provider.getTransaction(y);
+            const txInfo = await alchemy.getTransaction(y);
             const decode = new ethers.Interface([
               "function buyShares(address, uint256 )",
             ]);
@@ -101,8 +101,7 @@ const start = async () => {
           maxBodyLength: Infinity,
           url: "https://api.post.tech/wallet-post/wallet/send-transaction",
           headers: {
-            Authorization:
-              "eyJhbGciOiJSUzI1NiIsImtpZCI6IjlhNTE5MDc0NmU5M2JhZTI0OWIyYWE3YzJhYTRlMzA2M2UzNDFlYzciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWF0aGV1cyBNLiAoU2lubmVycz8pIPCflbjvuI8iLCJwaWN0dXJlIjoiaHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzE2NDI5MzQ3MTYwNzk2NjkyNDkvTUpQejJkX3dfbm9ybWFsLmpwZyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9wb3N0LXRlY2gtcHJvZCIsImF1ZCI6InBvc3QtdGVjaC1wcm9kIiwiYXV0aF90aW1lIjoxNjk1OTkxMTU3LCJ1c2VyX2lkIjoiVEx1TFZxV1gyWGUxbWNraWxrRkJuYTZXb1pUMiIsInN1YiI6IlRMdUxWcVdYMlhlMW1ja2lsa0ZCbmE2V29aVDIiLCJpYXQiOjE2OTYzMDc2MzEsImV4cCI6MTY5NjMxMTIzMSwiZW1haWwiOiJncy5tYXRoLm1tQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJ0d2l0dGVyLmNvbSI6WyIzNDM4NTg3MzI3Il0sImVtYWlsIjpbImdzLm1hdGgubW1AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoidHdpdHRlci5jb20ifX0.dHhDiOEasJob38y9LKvB3A0NKtcmU1xzP0xoUSf-Qm3ECwOGlt8v3wQgUfmYmBKpi441Ky8LhYbuaFNOm_NSSkQ3BPGtF-UvdLiGq9CDFYmMCNxUYpZSmS4glo_kuhcMhkyVLhY4aC2Ms0ybM6nLqYbEhdV0RObC3g6KRrRkAd7HEA3tOTs-_tcq5Bxyg2b3obf9tVstMnBCwkDnsPUrn9KIWXjP6li5mJsezrgKmQhm2G9m1WM4SRowJoxEUaG_ov1zYMZ8o-jIp-rUfZHHuuJRKfnLMn7KjEEfcrIaJXhAMqT_w23ISKYMxQbNU0zbwfKCRiNHsKIYqJo8TnYT3w",
+            Authorization: bearerToken,
             "Content-Type": " application/json",
           },
           data: data,
@@ -115,13 +114,12 @@ const start = async () => {
       } catch (error) {
         if (error.response.status == 400) {
           console.log("\nFalhou!");
-          //console.error("\n", error.response.data.message);
         } else if (error.response.status == 401) {
           console.log("\n", error.response.data.message);
+          bearerToken = await getToken();
         }
 
         return start();
-        // console.log(error.response.data.message);
       }
     };
 
