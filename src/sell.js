@@ -77,7 +77,6 @@ async function obterTransacoes() {
         try {
           await Promise.all(
             params.map(async (z) => {
-              await new Promise((resolve) => setTimeout(resolve, 1));
               const info = await contrato.getSellPrice(z[0], z[1]);
               const numberInfo = parseInt(info.toString());
               if (numberInfo >= 250000000000000) {
@@ -86,7 +85,8 @@ async function obterTransacoes() {
                   "sellShares",
                   [z[0], z[1]]
                 );
-                await placeSell(data);
+                placeSell(data);
+                await new Promise((resolve) => setTimeout(resolve, 200));
               }
             })
           );
@@ -137,6 +137,8 @@ async function obterTransacoes() {
       return start();
     }
   } catch (error) {
+    console.log("Erro ao obter transações:", error);
+    return start();
     console.log("Erro ao obter transações:", error);
     return start();
   }
