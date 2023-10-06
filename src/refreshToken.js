@@ -3,7 +3,6 @@ const puppeteer = require("puppeteer");
 async function getToken() {
   try {
     const browser = await puppeteer.launch({
-      headless: false,
       executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
       userDataDir: "/tmp/myChromeSession",
       headless: "new",
@@ -28,7 +27,7 @@ async function getToken() {
     console.log("\nRefresh token realizado!");
     return result;
   } catch (error) {
-    console.log("\nQuebrou, aguardando...");
+    console.log("Quebrou, aguardando...");
     await new Promise((resolve) => setTimeout(resolve, 15000));
     return getToken();
   }

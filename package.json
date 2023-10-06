@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "buy": "node ./src/buy.js",
-    "sell": "node ./src/sell.js"
+    "sell": "node ./src/sell.js",
+    "web": "node ./src/runChrome.js"
   },
   "keywords": [],
   "author": "",
