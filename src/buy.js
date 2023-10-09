@@ -21,7 +21,7 @@ const fetch = async function () {
     const dataList = [];
     while (dataList.length == 0) {
       const url = "https://api.post.tech/wallet-post/wallet/get-recent-action";
-      const resp = await axios.get(url);
+      const resp = await axios.get(url, { timeout: 7000 });
       const result = resp.data.data;
 
       for (const x of result) {
@@ -114,7 +114,7 @@ const placeBid = async function (raw) {
       data: data,
     };
 
-    const response = await axios.request(config);
+    const response = await axios.request(config, { timeout: 7000 });
     const result = JSON.stringify(response.data.data.tx_hash);
     console.log(`\n${result}`);
     return start();
